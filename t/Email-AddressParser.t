@@ -5,7 +5,7 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 6;
+use Test::More tests => 7;
 BEGIN { use_ok('Email::AddressParser') };
 
 #########################
@@ -27,3 +27,6 @@ ok(scalar(@v) == 4, 'parse returns correct number');
 ok($v[2]->phrase eq 'XXXNXAN RXchXeXD', 'subphrase');
 ok($v[2]->format eq '"XXXNXAN RXchXeXD" <RXXXXe.X.XXIXMAN@XXXe.XeXeXXr.us>', 'format');
 ok($v[2]->address eq 'RXXXXe.X.XXIXMAN@XXXe.XeXeXXr.us', 'address');
+
+@v = Email::AddressParser->parse('tkay@uoregon.edu, ');
+ok(@v == 1, 'empty parse yields no addresses');

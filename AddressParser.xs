@@ -625,11 +625,13 @@ MODULE = Email::AddressParser		PACKAGE = Email::AddressParser
 AV *
 internal_parse(char *in)
    CODE:
-      RETVAL = newAV();
-      sv_2mortal((SV*)RETVAL);
       ADDRESS *list = NULL;
       ADDRESS *p = NULL;
       HV *hv;
+      SV *val;
+
+      RETVAL = newAV();
+      sv_2mortal((SV*)RETVAL);
 
       rfc822_parse_adrlist(&list, in, "");
 
@@ -639,7 +641,13 @@ internal_parse(char *in)
          if(p->personal)
             hv_store(hv, "personal", 8, newSVpv(p->personal, strlen(p->personal)), 0);
          if(p->mailbox && p->host) {
-            SV *val = newSVpv(p->mailbox, 0);
+            if(strcmp(p->mailbox, "INVALID_ADDRESS") == 0) {
+               // Got a bad address, skip it
+               sv_2mortal((SV*)hv);
+               p=p->next;
+               continue;
+            }
+            val = newSVpv(p->mailbox, 0);
             sv_catpv(val, "@");
             sv_catpv(val, p->host);
             hv_store(hv, "email", 5, val, 0);
