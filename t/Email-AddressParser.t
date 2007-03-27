@@ -5,7 +5,7 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 7;
+use Test::More tests => 8;
 BEGIN { use_ok('Email::AddressParser') };
 
 #########################
@@ -20,6 +20,7 @@ $input = "<jXhnXonX\@lXnXXc.Xdu>, <kXXXn\@hXXXraXcoXnXXXX.com>,\r\n" .
 
 $a = new Email::AddressParser('tony', 'tkay@uoregon.edu');
 ok($a->format eq '"tony" <tkay@uoregon.edu>', 'object interface');
+ok($a->original eq '"tony" <tkay@uoregon.edu>', 'object interface');
 
 @v = Email::AddressParser->parse($input);
 ok(scalar(@v) == 4, 'parse returns correct number');
@@ -30,3 +31,4 @@ ok($v[2]->address eq 'RXXXXe.X.XXIXMAN@XXXe.XeXeXXr.us', 'address');
 
 @v = Email::AddressParser->parse('tkay@uoregon.edu, ');
 ok(@v == 1, 'empty parse yields no addresses');
+
